@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+ id                String    @id @default(uuid())
+ name              String    @db.VarChar(45)
+ lastname          String    @db.VarChar(45)
+ email             String    @db.VarChar(45) @unique
+ password          String    @db.VarChar(99)
+ phone             Int       @db.Int
+ status            Boolean   @default(false)
+ confirm_email     Boolean?  @default(false)
+ reset_status_pass Boolean?  @default(false)
+ verific_code      String?   @db.VarChar(45) 
+ created_at        DateTime  @default(now())
+ wallet            Wallet?
+}
+
+model Wallet {
+  id            String   @id @default(uuid())
+  user          User     @relation(fields: [user_id], references: [id])
+  user_id       String   @unique
+  name          String   @db.VarChar(45)
+  login         String   @db.VarChar(99)
+  password      String   @db.VarChar(99)
+  address_btc   String?  @db.VarChar(99)
+  type          String   @db.VarChar(45)
+  refresh_token String   @db.VarChar(99)
+  access_token  String   @db.VarChar(99)
+  status        Boolean  @default(false)
+  sats          Int?     @db.Int
+  usd           Decimal? @db.Decimal(12,5)
+  created_at    DateTime @default(now())
+}
