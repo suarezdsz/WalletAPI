@@ -24,13 +24,11 @@ model User {
  reset_status_pass Boolean?  @default(false)
  verific_code      String?   @db.VarChar(45) 
  created_at        DateTime  @default(now())
- wallet            Wallet?
 }
 
 model Wallet {
   id            String   @id @default(uuid())
-  user          User     @relation(fields: [user_id], references: [id])
-  user_id       String   @unique
+  user_id       String   @db.VarChar(99)
   name          String   @db.VarChar(45)
   login         String   @db.VarChar(99)
   password      String   @db.VarChar(99)
