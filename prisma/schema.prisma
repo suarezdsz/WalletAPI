@@ -18,6 +18,7 @@ model User {
  lastname          String    @db.VarChar(45)
  email             String    @db.VarChar(45) @unique
  password          String    @db.VarChar(99)
+ biometric         String    @db.VarChar(99)
  phone             Int       @db.Int
  status            Boolean   @default(false)
  confirm_email     Boolean?  @default(false)
