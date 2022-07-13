@@ -66,6 +66,8 @@ model Categories {
 model Products {
   id            String   @id @default(uuid())
   name          String   @db.VarChar(45)
+  currency      String   @db.VarChar(10)
+  price         Number   @db.int4
   img           String   @db.VarChar(45)
   category      Categories     @relation(fields: [category_id], references: [id])
   category_id   String   @default(uuid())
