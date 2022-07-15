@@ -18,7 +18,7 @@ model Users {
  lastname          String    @db.VarChar(45)
  email             String    @db.VarChar(45) @unique
  password          String    @db.VarChar(99)
- biometric         String    @db.VarChar(99)
+ biometric         String?    @db.VarChar(99)
  phone             Int       @db.Int
  status            Boolean   @default(false)
  confirm_email     Boolean?  @default(false)
@@ -67,7 +67,7 @@ model Products {
   id            String   @id @default(uuid())
   name          String   @db.VarChar(45)
   currency      String   @db.VarChar(10)
-  price         Number   @db.int4
+  price         Decimal? @db.Decimal(12,5)
   img           String   @db.VarChar(45)
   category      Categories     @relation(fields: [category_id], references: [id])
   category_id   String   @default(uuid())
