@@ -25,7 +25,7 @@ model Users {
  reset_status_pass Boolean?  @default(false)
  verific_code      String?   @db.VarChar(45) 
  created_at        DateTime  @default(now())
- categories        Categories[]
+ products        Products[]
 }
 
 model Wallets {
@@ -57,19 +57,18 @@ model Fiat {
 model Categories {
   id            String   @id @default(uuid())
   name          String   @db.VarChar(45)
-  user          Users     @relation(fields: [user_id], references: [id])
   user_id       String   @default(uuid())
   created_at    DateTime @default(now())
-  products    Products[]
+
 }
 
 model Products {
   id            String   @id @default(uuid())
+  user          Users    @relation(fields: [user_id], references: [id])
+  user_id       String   @default(uuid())
   name          String   @db.VarChar(45)
   currency      String   @db.VarChar(10)
-  price         Decimal? @db.Decimal(12,5)
-  img           String   @db.VarChar(45)
-  category      Categories     @relation(fields: [category_id], references: [id])
-  category_id   String   @default(uuid())
+  price         Decimal  @db.Decimal(12,5)
+  img           String?  @db.VarChar(45)
   created_at    DateTime @default(now())
 }
