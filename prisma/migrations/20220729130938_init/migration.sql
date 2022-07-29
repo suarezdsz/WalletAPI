@@ -1,24 +1,25 @@
 -- CreateTable
-CREATE TABLE `User` (
+CREATE TABLE `Users` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
     `lastname` VARCHAR(45) NOT NULL,
     `email` VARCHAR(45) NOT NULL,
     `password` VARCHAR(99) NOT NULL,
-    `biometric` VARCHAR(99) NOT NULL,
+    `biometric` VARCHAR(99) NULL,
     `phone` INTEGER NOT NULL,
     `status` BOOLEAN NOT NULL DEFAULT false,
     `confirm_email` BOOLEAN NULL DEFAULT false,
     `reset_status_pass` BOOLEAN NULL DEFAULT false,
     `verific_code` VARCHAR(45) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `code_reference` VARCHAR(45) NOT NULL,
 
-    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `Users_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Wallet` (
+CREATE TABLE `Wallets` (
     `id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(99) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
@@ -37,7 +38,7 @@ CREATE TABLE `Wallet` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `ExchangeRate` (
+CREATE TABLE `Fiat` (
     `id` VARCHAR(191) NOT NULL,
     `type` VARCHAR(45) NOT NULL,
     `currency` VARCHAR(99) NOT NULL,
@@ -45,12 +46,12 @@ CREATE TABLE `ExchangeRate` (
     `value_rate` DECIMAL(12, 5) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `ExchangeRate_type_key`(`type`),
+    UNIQUE INDEX `Fiat_type_key`(`type`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Category` (
+CREATE TABLE `Categories` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
@@ -60,18 +61,48 @@ CREATE TABLE `Category` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Product` (
+CREATE TABLE `Products` (
     `id` VARCHAR(191) NOT NULL,
+    `user_id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(45) NOT NULL,
-    `img` VARCHAR(45) NOT NULL,
-    `category_id` VARCHAR(191) NOT NULL,
+    `currency` VARCHAR(10) NOT NULL,
+    `price` DECIMAL(12, 5) NOT NULL,
+    `img` VARCHAR(45) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `References` (
+    `id` VARCHAR(191) NOT NULL,
+    `user_id` VARCHAR(191) NOT NULL,
+    `code_reference` VARCHAR(45) NOT NULL,
+    `status` BOOLEAN NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `References_code_reference_key`(`code_reference`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Group_Reference` (
+    `id` VARCHAR(191) NOT NULL,
+    `reference_id` VARCHAR(191) NOT NULL,
+    `user_refered` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Category` ADD CONSTRAINT `Category_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Products` ADD CONSTRAINT `Products_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Product` ADD CONSTRAINT `Product_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `References` ADD CONSTRAINT `References_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Group_Reference` ADD CONSTRAINT `Group_Reference_user_refered_fkey` FOREIGN KEY (`user_refered`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Group_Reference` ADD CONSTRAINT `Group_Reference_reference_id_fkey` FOREIGN KEY (`reference_id`) REFERENCES `References`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
